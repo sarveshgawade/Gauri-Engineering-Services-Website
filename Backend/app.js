@@ -1,9 +1,10 @@
 import express from 'express'
+import connectToDB from './config/connectToDB.js'
 
+// taking instance of express
 const app = express()
 
-app.use('/',(req,res) => {
-    res.status(200).send('home-page')
-})
+// connecting to DB
+connectToDB()
 
 export default app
