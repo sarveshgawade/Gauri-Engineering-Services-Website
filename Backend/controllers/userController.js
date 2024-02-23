@@ -1,22 +1,17 @@
 import user from "../models/userModel.js";
+import customAppError from "../utils/errorUtil.js"; 
 
 const register = async (req,res,next) => {
     const {fullName,email,password,role} = req.body
 
     if(!fullName || !email || !password){
-        res.status(500).json({
-            success: false ,
-            message: 'Please provide all details'
-        })
+        return next(new customAppError(500,'Please provide all details'))
     }
 
     const userExists = await user.findOne({email})
 
     if(userExists){
-        res.status(500).json({
-            success: false ,
-            message: 'User already exists'
-        })
+        return next(new customAppError(500,'User already exists'))
     }
 
     const newUser = await user.create({
@@ -27,10 +22,7 @@ const register = async (req,res,next) => {
     })
 
     if(!newUser){
-        res.status(500).json({
-            success: false ,
-            message: 'Error in creating new user !'
-        })
+        return next(new customAppError(500,'Error in creating new user'))
     }
 
     await newUser.save()
