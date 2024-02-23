@@ -1,6 +1,14 @@
 import user from "../models/userModel.js";
 import customAppError from "../utils/errorUtil.js"; 
 
+
+const cookieOptions = {
+    maxAge: 1*24*60*60*1000,
+    httpOnly: true,
+    secure: false
+}
+
+
 const register = async (req,res,next) => {
     const {fullName,email,password,role} = req.body
 
@@ -26,6 +34,12 @@ const register = async (req,res,next) => {
     }
 
     await newUser.save()
+
+    // generate token
+    const token = await newUser.generateJWTtoken()
+
+    // insert token into cookie
+    res.cookie('generated-token',token,cookieOptions)
 
     newUser.password = undefined
     

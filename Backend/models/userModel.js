@@ -1,4 +1,7 @@
 import mongoose, { model } from "mongoose";
+import jwtToken from 'jsonwebtoken'
+import {config} from 'dotenv'
+config()
 
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -33,6 +36,25 @@ const userSchema = new mongoose.Schema({
 },{
      timestamps:true
 })
+
+
+// TOKEN GENERATION CUSTOM METHODS
+userSchema.methods = {
+    generateJWTtoken :  function(){
+        return  jwtToken.sign(
+            {
+                id : this._id ,
+                email : this.email ,
+                fullName : this.fullName,
+                role: this.role ,
+            },
+            process.env.SECRET,
+            {
+                expiresIn: process.env.JWT_EXPIRY
+            }
+        )
+    }
+}
 
 const user = model('USER',userSchema)
 
