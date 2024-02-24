@@ -8,7 +8,6 @@ const cookieOptions = {
     secure: false
 }
 
-
 const register = async (req,res,next) => {
     try {
         const {fullName,email,password,role} = req.body
@@ -86,6 +85,9 @@ const login = async (req,res,next) => {
     }
 }
 
+const logout = async () => {
+
+}
 
 
-export {register,login}
+export {register,login,logout}
