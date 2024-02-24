@@ -62,17 +62,23 @@ const login = async (req,res,next) => {
             return next(new customAppError(500,'All fields are required'))
         }
 
-        const userExists = await user.findOne({email})
+        const existingUser = await user.findOne({email})
         .select('+password')
 
-        if(!userExists){
-            return next(new customAppError(500,'user not found'))
+        if(!existingUser || ! (await existingUser.comparePassword(password))){
+            return next(new customAppError(500,'email or password does not match !'))
         }
-        
+
+        const token = await existingUser.generateJWTtoken()
+
+        res.cookie('generated-token',token,cookieOptions)
+
+        existingUser.password = undefined
+
         res.status(200).json({
             success: true ,
             message: 'logged in successfully' ,
-            userExists
+            existingUser
         })
 
     } catch (error) {
