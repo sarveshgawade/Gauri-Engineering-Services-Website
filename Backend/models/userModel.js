@@ -1,5 +1,6 @@
 import mongoose, { model } from "mongoose";
 import jwtToken from 'jsonwebtoken'
+import bcrypt from  'bcrypt'
 import {config} from 'dotenv'
 config()
 
@@ -37,6 +38,13 @@ const userSchema = new mongoose.Schema({
      timestamps:true
 })
 
+// PASSWORD ENCRYPTION
+userSchema.pre('save', async function(next) {
+    if(!this.isModified('password')){
+        return next()
+    }
+    this.password =  await bcrypt.hash(this.password,7)
+})
 
 // TOKEN GENERATION CUSTOM METHODS
 userSchema.methods = {
