@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, logout, register } from "../controllers/userController.js";
+import { getProfile, login, logout, register } from "../controllers/userController.js";
 import { isLoggedIn } from "../middleware/authorizationMiddleware.js";
 
 
@@ -10,5 +10,6 @@ const router = Router()
 router.post('/register',register)
 router.post('/login',login)
 router.get('/logout',logout)
+router.get('/my-profile',isLoggedIn,getProfile)
 
 export default router

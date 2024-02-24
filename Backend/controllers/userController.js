@@ -39,7 +39,7 @@ const register = async (req,res,next) => {
         const token = await newUser.generateJWTtoken()
 
         // insert token into cookie
-        res.cookie('generated-token',token,cookieOptions)
+        res.cookie('token',token,cookieOptions)
 
         newUser.password = undefined
         
@@ -70,7 +70,7 @@ const login = async (req,res,next) => {
 
         const token = await existingUser.generateJWTtoken()
 
-        res.cookie('generated-token',token,cookieOptions)
+        res.cookie('token',token,cookieOptions)
 
         existingUser.password = undefined
 
@@ -86,7 +86,7 @@ const login = async (req,res,next) => {
 }
 
 const logout = async (req,res) => {
-    res.cookie('generated-token',null,{
+    res.cookie('token',null,{
         secure: true,
         maxAge: 0 ,
         httpOnly: true
@@ -98,5 +98,21 @@ const logout = async (req,res) => {
     })
 }
 
+const getProfile = async (req,res,next) => {
+    try {
+        const userId = req.user.id 
 
-export {register,login,logout}
+        const userFromDB = await user.findById(userId)
+
+        res.status(200).json({
+            success:true,
+            message: 'user found !',
+            userFromDB
+        })
+    } catch (error) {
+        return next(new customAppError(500,'failed to fetch profile'))
+    }
+}
+
+
+export {register,login,logout,getProfile}
