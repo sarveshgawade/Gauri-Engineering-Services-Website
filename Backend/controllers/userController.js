@@ -1,6 +1,6 @@
 import user from "../models/userModel.js";
 import customAppError from "../utils/errorUtil.js"; 
-
+import sendEmail from '../utils/sendMail.js'
 
 const cookieOptions = {
     maxAge: 1*24*60*60*1000,
@@ -114,5 +114,45 @@ const getProfile = async (req,res,next) => {
     }
 }
 
+const forgotPassword = async (req,res,next) => {
+    const {email} = req.body
 
-export {register,login,logout,getProfile}
+    if(!email){
+        return next(new customAppError(500,'Please provide email !'))
+    }
+
+    const userFromDB = await user.findOne({email})
+
+    if(!userFromDB){
+        return next(new customAppError(500,'user not found !'))
+    }
+
+    const resetToken = await userFromDB.generatePasswordResetToken()
+
+    // save user in DB along with resetToken
+    await userFromDB.save()
+
+    const resetPasswordURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`
+
+    const subject = 'Reset Password'
+
+    const message = `You can reset your password by clicking <a href=${resetPasswordURL} target="_blank">Reset your password</a>\nIf the above link does not work for some reason then copy paste this link in new tab ${resetPasswordURL}.\n If you have not requested this, kindly ignore.`;
+
+    try {
+         await sendEmail(email,subject,message) 
+
+         res.status(200).json({
+            success : true,
+            message: `Reset password token has been sent to ${email} successfully`
+         })
+    } catch (error) {
+        user.forgotPasswordExpiry = undefined
+        user.forgotPasswordToken = undefined
+
+        await userFromDB.save() 
+
+        return next(new customAppError(500,error.message))
+    }
+}
+
+export {register,login,logout,getProfile,forgotPassword}

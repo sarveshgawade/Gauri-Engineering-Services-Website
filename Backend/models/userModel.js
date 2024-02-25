@@ -1,6 +1,7 @@
 import mongoose, { model } from "mongoose";
 import jwtToken from 'jsonwebtoken'
 import bcrypt from  'bcrypt'
+import crypto from 'crypto'
 import {config} from 'dotenv'
 config()
 
@@ -32,7 +33,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['USER','ADMIN'],
         default: 'USER'
-    }
+    },
+    forgotPasswordToken:{
+        type: 'String'
+    },
+    forgotPasswordExpiry :{
+        type: 'Date'
+    },
 
 },{
      timestamps:true
@@ -64,6 +71,19 @@ userSchema.methods = {
     },
     comparePassword: async function(plaintextPassword){
         return await bcrypt.compare(plaintextPassword,this.password)
+    },
+    generatePasswordResetToken : async function () {
+        const resetToken = crypto.randomBytes(20).toString('hex')
+
+        this.forgotPasswordToken = crypto.createHash('sha256')
+        .update(resetToken)
+        .digest('hex')
+
+        // set expiry 15 mins from now
+        this.forgotPasswordExpiry = Date.now() + (16*60*1000)
+
+        return resetToken
+
     }
 }
 
