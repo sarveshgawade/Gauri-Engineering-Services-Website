@@ -3,6 +3,7 @@ import jwtToken from 'jsonwebtoken'
 import bcrypt from  'bcrypt'
 import crypto from 'crypto'
 import {config} from 'dotenv'
+import { log } from "console";
 config()
 
 const userSchema = new mongoose.Schema({
@@ -75,6 +76,7 @@ userSchema.methods = {
     generatePasswordResetToken : async function () {
         const resetToken = crypto.randomBytes(20).toString('hex')
 
+        
         this.forgotPasswordToken = crypto.createHash('sha256')
         .update(resetToken)
         .digest('hex')

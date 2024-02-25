@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { forgotPassword, getProfile, login, logout, register } from "../controllers/userController.js";
+import { changePassword, forgotPassword, getProfile, login, logout, register } from "../controllers/userController.js";
 import { isLoggedIn } from "../middleware/authorizationMiddleware.js";
 
 
@@ -12,5 +12,6 @@ router.post('/login',login)
 router.get('/logout',logout)
 router.get('/my-profile',isLoggedIn,getProfile)
 router.post('/forgot-password',forgotPassword)
+router.post('/change-password',isLoggedIn,changePassword)
 
 export default router

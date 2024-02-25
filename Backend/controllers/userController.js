@@ -155,4 +155,37 @@ const forgotPassword = async (req,res,next) => {
     }
 }
 
-export {register,login,logout,getProfile,forgotPassword}
+const changePassword = async (req,res,next) => {
+    const {oldPassword, newPassword} = req.body
+    const {id} = req.user
+
+    if(!oldPassword || !newPassword){
+        return next(new customAppError(500,`All fields are mandatory`))
+    }
+
+    const userExists = await user.findById(id).select('+password')
+
+    if(!userExists){
+        return next(new customAppError(500,'user does not exist'))
+    }
+
+    const isPasswordValid = await userExists.comparePassword(oldPassword)
+
+    if(!isPasswordValid){
+        return next(new customAppError(500,'old password invalid'))
+    }
+
+    userExists.password = newPassword
+
+    await userExists.save()
+
+    userExists.password = undefined
+
+    res.status(200).json({
+        success: true ,
+        message: `Password changed successfully`
+    })
+} 
+
+
+export {register,login,logout,getProfile,forgotPassword,changePassword}
