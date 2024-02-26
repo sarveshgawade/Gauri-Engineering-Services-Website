@@ -3,7 +3,6 @@ import jwtToken from 'jsonwebtoken'
 import bcrypt from  'bcrypt'
 import crypto from 'crypto'
 import {config} from 'dotenv'
-import { log } from "console";
 config()
 
 const userSchema = new mongoose.Schema({
