@@ -58,5 +58,35 @@ const addProduct = async(req,res,next) => {
     }
 }
 
+const removeProduct = async (req,res,next) => {
+    try {
+        const {productId} = req.body
 
-export {getAllProducts,addProduct}
+        if(!productId){
+            return next(new customAppError(500,'please provide productId'))
+        }
+
+        const productExists = await Product.findOne({productId})
+
+        if(!productExists){
+            return next(new customAppError(500,'product with given productId does not exists'))
+        }
+
+        const deletedProduct = await Product.findOneAndDelete({productId})
+
+        if(!deletedProduct){
+            return next(new customAppError(500,'error in deleting product'))
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'product deleted sucessfully !',
+        })
+
+    } catch (error) {
+        return next(new customAppError(500,error.message))
+    }
+}
+
+
+export {getAllProducts,addProduct,removeProduct}
