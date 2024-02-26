@@ -4,6 +4,7 @@ const productSchema = new mongoose.Schema({
     productId: {
         type: String ,
         required: [true,`Product ID is required`],
+        unique: true
     },
     productName: {
         type: String ,
@@ -13,16 +14,16 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true,`Description is required`]
     },
-    thumbnail:{
-        public_id: {
-            type: String,
-            required: true
-        },
-        secure_url: {
-            type: String,
-            required: true
-        }
-    },
+    // thumbnail:{
+    //     public_id: {
+    //         type: String,
+    //         required: true
+    //     },
+    //     secure_url: {
+    //         type: String,
+    //         required: true
+    //     }
+    // },
 },{
     timestamps:true
 })

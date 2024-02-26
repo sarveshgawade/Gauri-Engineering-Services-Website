@@ -26,7 +26,7 @@ const register = async (req,res,next) => {
             fullName,
             email,
             password,
-            role
+            // role
         })
 
         if(!newUser){
