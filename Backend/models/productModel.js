@@ -1,11 +1,11 @@
 import mongoose from 'mongoose'
 
 const productSchema = new mongoose.Schema({
-    productId: {
-        type: String ,
-        required: [true,`Product ID is required`],
-        unique: true
-    },
+    // productId: {
+    //     type: String ,
+    //     required: [true,`Product ID is required`],
+    //     unique: true
+    // },
     productName: {
         type: String ,
         required: [true,`Product Name is required`],

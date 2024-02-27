@@ -21,20 +21,20 @@ const getAllProducts = async (req,res,next) => {
 
 const addProduct = async(req,res,next) => {
     try {
-        const {productId,productName,description,thumbnail} = req.body
+        const {productName,description,thumbnail} = req.body
 
-        if(!productId || !productName || !description){
+        if( !productName || !description){
             return next(new customAppError(500,'All fields are required'))
         }
 
-        const productExists = await Product.findOne({productId})
+        // const productExists = await Product.findOne({productId})
 
-        if(productExists){
-            return next(new customAppError(500,'Product already exists'))
-        }
+        // if(productExists){
+        //     return next(new customAppError(500,'Product already exists'))
+        // }
 
         const newProduct = await Product.create({
-            productId,
+            // productId,
             productName,
             description,
             // thumbnail
@@ -60,19 +60,19 @@ const addProduct = async(req,res,next) => {
 
 const removeProduct = async (req,res,next) => {
     try {
-        const {productId} = req.body
+        const {id} = req.params
 
-        if(!productId){
-            return next(new customAppError(500,'please provide productId'))
-        }
+        // if(!productId){
+        //     return next(new customAppError(500,'please provide productId'))
+        // }
 
-        const productExists = await Product.findOne({productId})
+        const productExists = await Product.findById(id)
 
         if(!productExists){
             return next(new customAppError(500,'product with given productId does not exists'))
         }
 
-        const deletedProduct = await Product.findOneAndDelete({productId})
+        const deletedProduct = await Product.findByIdAndDelete(id)
 
         if(!deletedProduct){
             return next(new customAppError(500,'error in deleting product'))
@@ -91,9 +91,9 @@ const removeProduct = async (req,res,next) => {
 
 const getProductById = async (req,res,next) => {
     try {
-        const {productId} = req.params
+        const {id} = req.params
 
-        const product = await Product.findOne({productId})
+        const product = await Product.findById(id)
 
         if(!product){
             return next(new customAppError(500,'product not found'))

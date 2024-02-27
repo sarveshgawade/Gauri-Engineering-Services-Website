@@ -8,8 +8,8 @@ const router = Router()
 // routes
 router.get('/',getAllProducts)
 router.post('/add-product',isLoggedIn,authorizedRoles('ADMIN'),addProduct)
-router.delete('/remove-product',isLoggedIn,authorizedRoles('ADMIN'),removeProduct)
-router.get('/view-product/:productId',getProductById)
+router.delete('/remove-product/:id',isLoggedIn,authorizedRoles('ADMIN'),removeProduct)
+router.get('/view-product/:id',getProductById)
 
 
 export default router
