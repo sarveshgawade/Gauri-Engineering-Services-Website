@@ -89,4 +89,24 @@ const removeProduct = async (req,res,next) => {
 }
 
 
-export {getAllProducts,addProduct,removeProduct}
+const getProductById = async (req,res,next) => {
+    try {
+        const {productId} = req.params
+
+        const product = await Product.findOne({productId})
+
+        if(!product){
+            return next(new customAppError(500,'product not found'))
+        }
+
+        res.status(200).json({
+            success : true ,
+            message: 'product found',
+            product
+        })
+    } catch (error) {
+        return next(new customAppError(500,error.message))
+    }
+}
+
+export {getAllProducts,addProduct,removeProduct,getProductById}
